@@ -1,48 +1,119 @@
 name: Build BiliPink APK
+
+
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
+
   workflow_dispatch:
 
+
+
 jobs:
+
   build:
+
     runs-on: ubuntu-22.04
+
+
     steps:
+
+
       - name: Checkout source
         uses: actions/checkout@v4
 
-      # 下载bdl二进制
-      - name: Download bdl-android-arm64 binary
+
+
+      # 下载bdl
+      - name: Download bdl binary
         run: |
           mkdir -p assets
-          curl -L --connect-timeout 60 "https://github.com/Yuelioi/bdl/releases/download/v0.8.4/bdl-android-arm64" -o assets/bdl-android-aarch64
+
+          curl -L \
+          --connect-timeout 60 \
+          "https://github.com/Yuelioi/bdl/releases/download/v0.8.4/bdl-android-arm64" \
+          -o assets/bdl-android-aarch64
+
           chmod +x assets/bdl-android-aarch64
+
           ls -lh assets
 
+
+
+      # Python
       - name: Setup Python 3.9
         uses: actions/setup-python@v5
+
         with:
           python-version: "3.9"
 
-      # 安装JDK11！！把原来openjdk17换成11
-      - name: Install system dependencies
+
+
+      # Java17 + 依赖
+      - name: Install dependencies
         run: |
+
           sudo apt update
-          sudo apt install -y git zip unzip openjdk-11-jdk autoconf libtool pkg-config zlib1g-dev libffi-dev libssl-dev automake autopoint gettext cmake
-          sudo update-alternatives --set java /usr/lib/jvm/java-11-openjdk-amd64/bin/java
-          sudo update-alternatives --set javac /usr/lib/jvm/java-11-openjdk-amd64/bin/javac
 
-      - name: Install python packages
+
+          sudo apt install -y \
+          git \
+          zip \
+          unzip \
+          openjdk-17-jdk \
+          autoconf \
+          libtool \
+          pkg-config \
+          zlib1g-dev \
+          libffi-dev \
+          libssl-dev \
+          automake \
+          cmake
+
+
+
+          java -version
+
+
+
+      # 清除GitHub默认NDK污染
+      - name: Clear Android NDK env
         run: |
+
+          echo "ANDROID_NDK=" >> $GITHUB_ENV
+          echo "ANDROID_NDK_HOME=" >> $GITHUB_ENV
+          echo "ANDROID_NDK_ROOT=" >> $GITHUB_ENV
+
+
+
+      # Buildozer
+      - name: Install build tools
+        run: |
+
           python -m pip install --upgrade pip setuptools
-          pip install buildozer==1.5.0 cython==0.29.36
 
-      - name: Build DEBUG APK
+
+          pip install \
+          buildozer==1.5.0 \
+          cython==0.29.36
+
+
+
+      # 编译
+      - name: Build APK
         run: |
+
           buildozer -v android debug
 
-      - name: Upload APK artifact
+
+
+      # 上传
+      - name: Upload APK
         uses: actions/upload-artifact@v4
+
         with:
-          name: BiliPink-Debug-APK
+
+          name: BiliPink-debug-apk
+
           path: bin/*.apk
