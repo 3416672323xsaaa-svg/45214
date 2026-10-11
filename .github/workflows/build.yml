@@ -11,7 +11,7 @@ jobs:
       - name: Checkout source
         uses: actions/checkout@v4
 
-      # 下载BDL安卓arm64二进制
+      # 下载BDL安卓arm64二进制，打包进APK
       - name: Download bdl-android-arm64 binary
         run: |
           mkdir -p assets
@@ -19,10 +19,11 @@ jobs:
           chmod +x assets/bdl-android-aarch64
           ls -lh assets
 
-      - name: Setup Python 3.10
+      # 【关键】用Python 3.9，p4a兼容性最好
+      - name: Setup Python 3.9
         uses: actions/setup-python@v5
         with:
-          python-version: "3.10"
+          python-version: "3.9"
 
       - name: Install system dependencies
         run: |
@@ -31,12 +32,12 @@ jobs:
           sudo update-alternatives --set java /usr/lib/jvm/java-17-openjdk-amd64/bin/java
           sudo update-alternatives --set javac /usr/lib/jvm/java-17-openjdk-amd64/bin/javac
 
+      # 【关键】buildozer固定1.5.0，公认最稳定版本
       - name: Install python packages
         run: |
           python -m pip install --upgrade pip setuptools
-          pip install buildozer==1.6.0 cython==0.29.37
+          pip install buildozer==1.5.0 cython==0.29.36
 
-      # 重点：删掉 buildozer android clean！直接release，自动拉取p4a
       - name: Build APK
         run: |
           buildozer -v android release
