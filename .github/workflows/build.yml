@@ -11,11 +11,11 @@ jobs:
       - name: Checkout source
         uses: actions/checkout@v4
 
-      # 下载bdl二进制（月离镜像，稳定）
-      - name: Download bdl binary
+      # 从BDL官方github release下载android-arm64裸可执行文件
+      - name: Download bdl-android-arm64 binary
         run: |
           mkdir -p assets
-          wget https://apps.yuelili.com/software/bdl/download/bdl-android-arm64 -O assets/bdl-android-aarch64
+          curl -L "https://github.com/Yuelioi/bdl/releases/download/v0.8.4/bdl-android-arm64" -o assets/bdl-android-aarch64
           chmod +x assets/bdl-android-aarch64
           ls -lh assets
 
@@ -24,12 +24,10 @@ jobs:
         with:
           python-version: "3.10"
 
-      # 重点：ubuntu官方源自带openjdk17，**不再用失效的openjdk-r PPA**
       - name: Install system dependencies
         run: |
           sudo apt update
           sudo apt install -y git zip unzip openjdk-17-jdk autoconf libtool pkg-config zlib1g-dev libffi-dev libssl-dev automake autopoint gettext
-          # 绑定java版本
           sudo update-alternatives --set java /usr/lib/jvm/java-17-openjdk-amd64/bin/java
           sudo update-alternatives --set javac /usr/lib/jvm/java-17-openjdk-amd64/bin/javac
 
