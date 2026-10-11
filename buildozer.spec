@@ -7,7 +7,6 @@ source.include_exts = py,png,jpg,jpeg,kv,atlas,ttf,json,xml
 source.include_patterns = assets/*
 version = 1.0
 
-# 【关键】去掉pyjnius，buildozer会自动内置，避免版本冲突
 requirements = python3,kivy==2.3.0,kivymd==1.1.1,pillow
 
 orientation = portrait
@@ -27,6 +26,9 @@ android.archs = arm64-v8a
 
 android.version_code = 1
 android.version_name = 1.0
+
+# 【新增强制锁定p4a版本，避免自动拉取master新版炸掉】
+p4a.branch = v2024.01.21
 
 [buildozer]
 log_level = 3
