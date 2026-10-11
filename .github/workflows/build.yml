@@ -24,12 +24,13 @@ jobs:
         with:
           python-version: "3.9"
 
+      # 安装JDK11！！把原来openjdk17换成11
       - name: Install system dependencies
         run: |
           sudo apt update
-          sudo apt install -y git zip unzip openjdk-17-jdk autoconf libtool pkg-config zlib1g-dev libffi-dev libssl-dev automake autopoint gettext cmake
-          sudo update-alternatives --set java /usr/lib/jvm/java-17-openjdk-amd64/bin/java
-          sudo update-alternatives --set javac /usr/lib/jvm/java-17-openjdk-amd64/bin/javac
+          sudo apt install -y git zip unzip openjdk-11-jdk autoconf libtool pkg-config zlib1g-dev libffi-dev libssl-dev automake autopoint gettext cmake
+          sudo update-alternatives --set java /usr/lib/jvm/java-11-openjdk-amd64/bin/java
+          sudo update-alternatives --set javac /usr/lib/jvm/java-11-openjdk-amd64/bin/javac
 
       - name: Install python packages
         run: |
