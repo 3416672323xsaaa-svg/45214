@@ -7,8 +7,8 @@ source.include_exts = py,png,jpg,jpeg,kv,atlas,ttf,json,xml
 source.include_patterns = assets/*
 version = 1.0
 
-# 【修复核心：版本更换 + 语法修正！逗号放行末尾】
-requirements = python3,kivy==2.3.0,kivymd==1.1.1,pillow,pyjnius
+# 【关键】去掉pyjnius，buildozer会自动内置，避免版本冲突
+requirements = python3,kivy==2.3.0,kivymd==1.1.1,pillow
 
 orientation = portrait
 
