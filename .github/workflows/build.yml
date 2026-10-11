@@ -11,7 +11,16 @@ jobs:
       - name: Checkout source
         uses: actions/checkout@v4
 
-      # 下载BDL安卓arm64二进制，打包进APK
+      # 【关键】增加4G交换内存，防止OOM崩溃！
+      - name: Add swap memory
+        run: |
+          sudo fallocate -l 4G /swapfile
+          sudo chmod 600 /swapfile
+          sudo mkswap /swapfile
+          sudo swapon /swapfile
+          free -h
+
+      # 下载bdl二进制
       - name: Download bdl-android-arm64 binary
         run: |
           mkdir -p assets
@@ -19,20 +28,22 @@ jobs:
           chmod +x assets/bdl-android-aarch64
           ls -lh assets
 
-      # 【关键】用Python 3.9，p4a兼容性最好
       - name: Setup Python 3.9
         uses: actions/setup-python@v5
         with:
           python-version: "3.9"
 
+      # 【重点】补ubuntu24缺失的ncurses5 +全套编译依赖
       - name: Install system dependencies
         run: |
           sudo apt update
-          sudo apt install -y git zip unzip openjdk-17-jdk autoconf libtool pkg-config zlib1g-dev libffi-dev libssl-dev automake autopoint gettext
+          # 强制安装libncurses5（ubuntu24必须，否则p4a编译python直接失败）
+          echo "deb http://archive.ubuntu.com/ubuntu/ jammy main universe" | sudo tee /etc/apt/sources.list.d/jammy.list
+          sudo apt update
+          sudo apt install -y git zip unzip openjdk-17-jdk autoconf libtool pkg-config zlib1g-dev libffi-dev libssl-dev automake autopoint gettext libncurses5-dev libncursesw5-dev libtinfo5 cmake
           sudo update-alternatives --set java /usr/lib/jvm/java-17-openjdk-amd64/bin/java
           sudo update-alternatives --set javac /usr/lib/jvm/java-17-openjdk-amd64/bin/javac
 
-      # 【关键】buildozer固定1.5.0，公认最稳定版本
       - name: Install python packages
         run: |
           python -m pip install --upgrade pip setuptools
