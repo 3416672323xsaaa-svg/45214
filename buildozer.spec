@@ -29,5 +29,5 @@ android.version_code = 1
 android.version_name = 1.0
 
 [buildozer]
-log_level = 2
+log_level = 3
 warn_on_root = 1
