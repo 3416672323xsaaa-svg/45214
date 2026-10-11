@@ -11,11 +11,11 @@ jobs:
       - name: Checkout source
         uses: actions/checkout@v4
 
-      # 从BDL官方github release下载android-arm64裸可执行文件
+      # 下载BDL安卓arm64二进制
       - name: Download bdl-android-arm64 binary
         run: |
           mkdir -p assets
-          curl -L "https://github.com/Yuelioi/bdl/releases/download/v0.8.4/bdl-android-arm64" -o assets/bdl-android-aarch64
+          curl -L --connect-timeout 60 "https://github.com/Yuelioi/bdl/releases/download/v0.8.4/bdl-android-arm64" -o assets/bdl-android-aarch64
           chmod +x assets/bdl-android-aarch64
           ls -lh assets
 
@@ -36,9 +36,9 @@ jobs:
           python -m pip install --upgrade pip setuptools
           pip install buildozer==1.6.0 cython==0.29.37
 
+      # 重点：删掉 buildozer android clean！直接release，自动拉取p4a
       - name: Build APK
         run: |
-          buildozer android clean
           buildozer -v android release
 
       - name: Upload APK artifact
