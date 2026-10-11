@@ -7,21 +7,13 @@ source.include_exts = py,png,jpg,jpeg,kv,atlas,ttf,json,xml
 source.include_patterns = assets/*
 version = 1.0
 
-requirements =
-    python3,
-    kivy==2.3.0,
-    kivymd==1.2.0,
-    pillow
+# 【修复核心：版本更换 + 语法修正！逗号放行末尾】
+requirements = python3,kivy==2.3.0,kivymd==1.1.1,pillow,pyjnius
 
 orientation = portrait
 
-android.permissions =
-    INTERNET,
-    READ_MEDIA_VIDEO,
-    READ_MEDIA_IMAGES,
-    ACCESS_NETWORK_STATE
+android.permissions = INTERNET,READ_MEDIA_VIDEO,READ_MEDIA_IMAGES,ACCESS_NETWORK_STATE
 
-# android.sdk = 33  # 删掉这一行！！废弃参数
 android.api = 33
 android.minapi = 24
 android.ndk = 25b
