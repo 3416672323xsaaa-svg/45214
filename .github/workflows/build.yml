@@ -6,20 +6,16 @@ on:
 
 jobs:
   build:
-    # 换成ubuntu22.04，原生自带libncurses5，不用额外添加源
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout source
         uses: actions/checkout@v4
 
-      # 【修复swap，改用dd，兼容所有github runner】
-      - name: Add swap memory
-        run: |
-          sudo dd if=/dev/zero of=/swapfile bs=1M count=4096
-          sudo chmod 600 /swapfile
-          sudo mkswap /swapfile
-          sudo swapon /swapfile
-          free -h
+      # 使用成熟第三方Action添加4G Swap，避开根目录限制
+      - name: Add 4GB Swap
+        uses: pierrerotary/action-swap@v1
+        with:
+          swap-size: 4G
 
       # 下载bdl二进制
       - name: Download bdl-android-arm64 binary
@@ -34,7 +30,6 @@ jobs:
         with:
           python-version: "3.9"
 
-      # Ubuntu22原生自带ncurses5，依赖简化，不用加jammy源
       - name: Install system dependencies
         run: |
           sudo apt update
