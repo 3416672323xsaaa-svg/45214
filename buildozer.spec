@@ -15,7 +15,8 @@ android.permissions = INTERNET,READ_MEDIA_VIDEO,READ_MEDIA_IMAGES,ACCESS_NETWORK
 
 android.api = 33
 android.minapi = 24
-android.ndk = 25b
+# 换稳定ndk 25c，25b部分版本gradle兼容性差
+android.ndk = 25c
 
 android.accept_sdk_license = True
 android.add_assets = assets/bdl-android-aarch64
